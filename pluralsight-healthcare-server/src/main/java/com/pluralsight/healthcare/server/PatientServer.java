@@ -15,7 +15,9 @@ public class PatientServer {
     public static void main(String... args) {
         LOG.info("Starting HTTP server");
         PatientRepository patientRepository = PatientRepository.openPatientRepository("./patients.db");
-        ResourceConfig resourceConfig = new ResourceConfig().register(new PatientResource(patientRepository));
+        ResourceConfig resourceConfig = new ResourceConfig()
+                .register(new PatientResource(patientRepository))
+                .register(CorsFilter.class);  // Register the CORS filter
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), resourceConfig);
     }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Data Request</title>
+    <script>
+        async function fetchPatientData() {
+            try {
+                const response = await fetch('http://localhost:8080/patients', {
+                    method: 'GET'
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.text();
+                document.getElementById('result').textContent = data;
+            } catch (error) {
+                console.error('There was an error!', error);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Patient Data</h1>
+<button onclick="fetchPatientData()">Fetch Patient Data</button>
+<p id="result"></p>
+</body>
+</html>
