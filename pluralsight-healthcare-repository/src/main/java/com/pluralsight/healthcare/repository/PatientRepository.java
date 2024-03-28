@@ -12,7 +12,9 @@ public interface PatientRepository {
 
     void savePatient(Patient patient);
 
-    void addNotes(String id, String notes);
+    void addNotes(String patientId, String notes);
 
     List<Patient> getAllPatients();
+
+    Patient getPatientById(String patientId);
 }

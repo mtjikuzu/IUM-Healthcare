@@ -36,6 +36,35 @@ public class PatientResource {
         }
     }
 
+    @GET
+    @Path("/{patientId}/notes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPatientNotes(@PathParam("patientId") String patientId) {
+        try {
+            Patient patient = patientRepository
+                    .getPatientById(patientId);
+
+            if (patient == null) {
+                return Response
+                        .status(Response.Status.NOT_FOUND)
+                        .entity("Patient not found with ID: " + patientId)
+                        .build();
+            }
+
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(patient)
+                    .build();
+
+        } catch (RepositoryException e) {
+            LOG.error("Could not retrieve patient from the database.", e);
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while retrieving the patient.")
+                    .build();
+        }
+    }
+
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -51,5 +80,33 @@ public class PatientResource {
 
         // Return a 200 OK response indicating success
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("/{patientId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPatientById(@PathParam("patientId") String patientId) {
+        try {
+            Patient patient = patientRepository.getPatientById(patientId);
+
+            if (patient == null) {
+                return Response
+                        .status(Response.Status.NOT_FOUND)
+                        .entity("Patient not found with ID: " + patientId)
+                        .build();
+            }
+
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(patient)
+                    .build();
+
+        } catch (RepositoryException e) {
+            LOG.error("Could not retrieve patient from the database.", e);
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while retrieving the patient.")
+                    .build();
+        }
     }
 }

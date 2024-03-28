@@ -5,14 +5,16 @@
     <script>
         async function fetchPatientData() {
             try {
-                const response = await fetch('http://localhost:8080/patients', {
+                const response = await fetch('http://localhost:8080/patients/25d7aac7-5c00-4451-87a6-805cf34b122c', {
                     method: 'GET'
                 });
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                const data = await response.text();
-                document.getElementById('result').textContent = data;
+                const patient = await response.json(); // Assuming the response is in JSON format
+
+                // UNSAFE: Using innerHTML can lead to XSS attacks if patient.notes contains malicious scripts
+                document.getElementById('result').innerHTML = patient.notes;
             } catch (error) {
                 console.error('There was an error!', error);
             }
