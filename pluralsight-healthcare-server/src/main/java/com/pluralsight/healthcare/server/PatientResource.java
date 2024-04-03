@@ -6,6 +6,8 @@ import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +71,13 @@ public class PatientResource {
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response addNotes(@PathParam("id") String id, String notes) {
-        // Encode the notes to ASCII, ignoring any non-ASCII characters, and then decode back to a string
-        String sanitizedNotes = notes.chars()
-                .filter(c -> c <= 127) // Restrict to ASCII characters
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+        // Create a sanitizer policy
+        PolicyFactory sanitizer = Sanitizers.FORMATTING.and(Sanitizers.LINKS);
 
-        // Proceed with adding sanitized notes if validation passes
+        // Apply the sanitizer to the notes
+        String sanitizedNotes = sanitizer.sanitize(notes);
+
+        // Proceed with adding sanitized notes
         patientRepository.addNotes(id, sanitizedNotes);
 
         // Return a 200 OK response indicating success
