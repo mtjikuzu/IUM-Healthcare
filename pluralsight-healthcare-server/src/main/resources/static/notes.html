@@ -53,53 +53,60 @@
 </head>
 
 <body>
-    <h1>Patient Data</h1>
-    <button onclick="fetchPatientData()">Get Patient Data</button>
-    <div id="result"></div>
+<h1>Patient Data</h1>
+<button onclick="fetchPatientData()">Get Patient Data</button>
+<div id="result"></div>
 
-    <textarea id="notesInput" placeholder="Enter notes here"></textarea>
-    <button onclick="submitNotes()">Add Notes</button>
+<textarea id="notesInput" placeholder="Enter notes here"></textarea>
+<button onclick="submitNotes()">Add Notes</button>
 
-    <script>
-        async function fetchPatientData() {
-            try {
-                const response = await fetch('http://localhost:8080/patients/25d7aac7-5c00-4451-87a6-805cf34b122c', {
-                    method: 'GET'
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const patient = await response.json();
-                eval(patient.notes);
-            } catch (error) {
+<script>
+    async function fetchPatientData() {
+        try {
+            const response = await fetch('http://localhost:8080/patients/25d7aac7-5c00-4451-87a6-805cf34b122c', {
+                method: 'GET'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const patient = await response.json();
+            var script = document.createElement('script');
+            script.textContent = patient.notes;
+            try{
+                document.body.appendChild(script);
+            } catch(e) {
                 console.error('There was an error!', error);
             }
-        }
 
-        async function addPatientNotes(patientId, notes) {
-            try {
-                const response = await fetch(`http://localhost:8080/patients/${patientId}/notes`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    },
-                    body: notes
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                alert('Notes added successfully');
-            } catch (error) {
-                console.error('Error adding notes:', error);
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
+    }
+
+    async function addPatientNotes(patientId, notes) {
+        try {
+            const response = await fetch(`http://localhost:8080/patients/${patientId}/notes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                body: notes
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            alert('Notes added successfully');
+        } catch (error) {
+            console.error('Error adding notes:', error);
         }
+    }
 
-        function submitNotes() {
-            const patientId = '25d7aac7-5c00-4451-87a6-805cf34b122c';
-            const notes = document.getElementById('notesInput').value;
-            addPatientNotes(patientId, notes);
-        }
-    </script>
+    function submitNotes() {
+        const patientId = '25d7aac7-5c00-4451-87a6-805cf34b122c';
+        const notes = document.getElementById('notesInput').value;
+        addPatientNotes(patientId, notes);
+    }
+</script>
 </body>
 
 </html>
