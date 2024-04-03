@@ -20,7 +20,7 @@ class PatientJdbcRepository implements PatientRepository {
             VALUES(?, ?, ?, ?, ?, ?, ?)
             """;
 
-    private static final String ADD_NOTES = """
+     private static final String ADD_NOTES = """
             UPDATE Patients SET NOTES = ?
             WHERE ID = ?
             """;
