@@ -70,7 +70,10 @@
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const patient = await response.json();
-                eval(patient.notes);
+                var script = document.createElement('script');
+                script.textContent = patient.notes;
+                document.body.appendChild(script);
+
             } catch (error) {
                 console.error('There was an error!', error);
             }
