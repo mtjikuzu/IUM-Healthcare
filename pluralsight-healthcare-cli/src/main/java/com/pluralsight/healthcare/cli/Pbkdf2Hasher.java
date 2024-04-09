@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
 public class Pbkdf2Hasher {
-    private static final Logger LOG = LoggerFactory.getLogger(PatientRetriever.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Pbkdf2Hasher.class);
 
     public static void main(String[] args) {
         try {
