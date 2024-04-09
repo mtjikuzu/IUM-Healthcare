@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PasswordHasher {
-    private static final Logger LOG = LoggerFactory.getLogger(PatientRetriever.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PasswordHasher.class);
 
     public static void main(String[] args) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
