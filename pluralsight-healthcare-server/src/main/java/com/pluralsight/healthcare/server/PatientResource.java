@@ -3,20 +3,24 @@ package com.pluralsight.healthcare.server;
 import com.pluralsight.healthcare.domain.Patient;
 import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
+import io.jsonwebtoken.Jwts;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.*;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.stream.Stream;
 
 @Path("/patients")
 public class PatientResource {
     private static final Logger LOG = LoggerFactory.getLogger(PatientResource.class);
+    private static final String SECRET_KEY = "secretKey"; // This should be managed securely
 
     private final PatientRepository patientRepository;
 
@@ -110,5 +114,25 @@ public class PatientResource {
                     .entity("An error occurred while retrieving the patient.")
                     .build();
         }
+    }
+
+    @POST
+    @Path("/create")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response createSession() {
+        String jwt = generateJWT(); // Generate a JWT
+        String cookieValue = "Authorization=" + jwt + "; Path=/; HttpOnly; Secure; SameSite=Strict";
+        return Response.ok("Session created with JWT").header(HttpHeaders.SET_COOKIE, cookieValue).build();
+    }
+
+    private String generateJWT() {
+        long nowMillis = System.currentTimeMillis();
+        long expMillis = nowMillis + 3600000; // Token is valid for 1 hour
+        return Jwts.builder()
+                .subject("")
+                .issuedAt(new Date(nowMillis))
+                .expiration(new Date(expMillis))
+                .signWith(new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), "AES"))
+                .compact();
     }
 }
